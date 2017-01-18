@@ -9,8 +9,6 @@
 %-----------------------------------------------------------------------
 
 \setlength{\columnsep}{0.55cm} % Distance between the two columns
-\setlength{\fboxrule}{0.75pt} % Width of the border around the abstract
-
 %-----------------------------------------------------------------------
 %	COLORS
 %-----------------------------------------------------------------------
@@ -343,7 +341,7 @@ print.xtable(xtable(nameFive),include.rownames=F, include.colnames=F,
              hline.after=NULL, table.placement="H")
 @
 The models have pretty good accuracy, from \Sexpr{round(plotsAccu[1,]$Accuracy, 1)}\% to \Sexpr{round(plotsAccu[5,]$Accuracy, 1)}\%. 
-The \emph{Bagging CART model} is especially interesting because of its small computation time, \Sexpr{round(plotsAccu$Time[5],0)} seconds, in comparaison of the \Sexpr{round(plotsAccu$Time[1], 0)} seconds for the C5.0 model.
+The \emph{Bagging CART model} is especially interesting because of its small computation time, \Sexpr{round(plotsAccu$Time[5],0)} seconds, in comparaison of the \Sexpr{round(plotsAccu$Time[1], 0)} seconds for the C5.0 model\footnote{Computations times are calculated with computation on parallel work on 6 cores i7 cpu}.
 The statistiques tests for the means are significant, as we fail to reject that the trues means are not equals to the samples means, so the samples are representatives of the populations.
 The 95\% confidences intervals are presented in table~\ref{confInt}.
 
@@ -385,6 +383,9 @@ xtable(accuTimeFive, digits=2, label="tableFive",
 The most important result is that the accuracies are very, very good, around 99\%, and with small variations around the mean, as seen with the boxplots on the figure~\ref{fig:plotFive}. 
 
 Note the small decrease in performance of the Stochastic Gradient Boosting model, which is now worse than the Bagging CART model.
+
+
+The computations times have a very broad set, from 1 times 13 depending on the model considered.
 
 
 %##################################################

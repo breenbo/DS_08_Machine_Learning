@@ -1,10 +1,9 @@
 # Overview
 
-This report is the report for the Machine Learning Course Project, from the John Hopkins University on Coursera.
+This report is the report for the [Machine Learning Course Project](https://www.coursera.org/learn/practical-machine-learning/home/welcome), from the John Hopkins University on Coursera.
 
 You can find the report : 
 - [here in pdf](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.pdf "pdf format")
-- here in html, 
 - or [here for the .rnw file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.rnw "Rnoweb file"), containing all reproducible code and research.
 
 ***
@@ -21,8 +20,12 @@ This study contains some functions to :
 PreProcess, metrics, seed, control method, number of folder and repeats are arguments of functions, and can be tweaked.
 
 
+21 algorithms have been tested with this functions, and the best one, the *Bagged CART model*, chosen with a accuracy of more than 98 % and a computation of 160 seconds with parallel work on 6 cores i7.
+
+
 Please note that I'm not a native english, but I'm working on it ;-)
 
 
-Thanks for reading.
-Bruno Berrehuel.
+Thanks for reading. 
+
+[Bruno Berrehuel](https://fr.linkedin.com/in/brunoberrehuel).
