@@ -1,3 +1,5 @@
+# Overview
+
 This report is the report for the Machine Learning Course Project, from the John Hopkins University on Coursera.
 
 You can find the report : 
@@ -7,7 +9,7 @@ You can find the report :
 
 ***
 
-# Overview
+# Work quick explanation
 
 This study contains some functions to :
 - download datas from the web and them them on working directory
@@ -18,4 +20,9 @@ This study contains some functions to :
 
 PreProcess, metrics, seed, control method, number of folder and repeats are arguments of functions, and can be tweaked.
 
+
 Please note that I'm not a native english, but I'm working on it ;-)
+
+
+Thanks for reading.
+Bruno Berrehuel.
