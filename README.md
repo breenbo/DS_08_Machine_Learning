@@ -4,9 +4,8 @@ This report is the report for the [Machine Learning Course Project](https://www.
 
 You can find the report : 
 
-- for LaTeX users : [here in pdf](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.pdf "pdf format") and the [here for the .rnw file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.rnw "Rnoweb file"), containing all reproducible code and research.
-- for LaTeX users : [here in pdf](https://breenbo.github.io/DS_08_Machine_Learning/report.pdf) and the [here for the .rnw file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.rnw "Rnoweb file"), containing all reproducible code and research.
-- for Markdown users : [here in html](https://breenbo.github.io/DS_08_Machine_Learning/report.html) and the [here for the .Rmd file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.Rmd)
+- for LaTeX users : [here in compiled pdf](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.pdf "pdf format") and the [here for the .rnw file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.rnw "Rnoweb file"), containing all reproducible code and research.
+- for Markdown users : [here in compiled html](https://breenbo.github.io/DS_08_Machine_Learning/report.html) and the [here for the .Rmd file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.Rmd), containing all reproducible code and research.
 
 ***
 
