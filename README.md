@@ -2,10 +2,9 @@
 
 This report is the report for the [Machine Learning Course Project](https://www.coursera.org/learn/practical-machine-learning/home/welcome), from the John Hopkins University on Coursera.
 
-You can find the report [here in compiled html](https://breenbo.github.io/DS_08_Machine_Learning/report.html). For pdf, .rnw and . Rmd files, you can find them [here](https://github.com/breenbo/DS_08_Machine_Learning/) : 
+You can find the report [here in compiled html](https://breenbo.github.io/DS_08_Machine_Learning/report.html). 
 
-- for LaTeX users : [here in compiled pdf](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.pdf "pdf format") and the [here for the .rnw file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.rnw "Rnoweb file"), containing all reproducible code and research.
-- for Markdown users :  and the [here for the .Rmd file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.Rmd), containing all reproducible code and research.
+For pdf, .rnw and .Rmd files, you can find them [here](https://github.com/breenbo/DS_08_Machine_Learning/).
 
 ***
 
