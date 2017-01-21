@@ -6,6 +6,7 @@ You can find the report :
 
 - for LaTeX users : [here in pdf](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.pdf "pdf format") and the [.rnw file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.rnw "Rnoweb file"), containing all reproducible code and research.
 - for Markdown users : [here in html](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.html) and the [.Rmd file](https://github.com/breenbo/DS_08_Machine_Learning/blob/master/report.Rmd)
+- for Markdown users : [here in html](https://breenbo.github.io/DS_08_Machine_Learning/report.html) and the [.Rmd file](https://breenbo.github.io/DS_08_Machine_Learning/report.Rmd)
 
 ***
 
