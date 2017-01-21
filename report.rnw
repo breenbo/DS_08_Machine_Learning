@@ -277,7 +277,7 @@ hist(meanNA$meanNA, main="", breaks=75, col="blue",
 print.xtable(xtable(sumNA,
                     caption="Summary for mean of NA in predictors 
                     with NA",
-                    digits=4, label="namean"), include.rownames=F)
+                    digits=c(0,3,3,0,3), label="namean"), include.rownames=F)
 @
 
 \FloatBarrier
@@ -356,7 +356,7 @@ for (i in 1:5) {
 row.names(confTable) <- names(plotsAll[,1:5])
 print.xtable(xtable(confTable,
                     caption="Confidences intervals for models accuracy",
-                    digits=4, label="confInt"), include.colnames=F, 
+                    digits=1, label="confInt"), include.colnames=F, 
              hline.after=c(0,nrow(confTable)))
 @
 
@@ -377,7 +377,7 @@ g
 <<tableFive, echo=FALSE, results="asis">>=
 accuTimeFive <- subset(multiAccu(fitFive), select=c(-3))
 accuTimeFive$Time <- round(accuTimeFive$Time,0)
-xtable(accuTimeFive, digits=2, label="tableFive",
+xtable(accuTimeFive, digits=c(0,2,0), label="tableFive",
        caption="Accuracy and computation time for the 5 bests models")
 @
 The most important result is that the accuracies are very, very good, around 99\%, and with small variations around the mean, as seen with the boxplots on the figure~\ref{fig:plotFive}. 

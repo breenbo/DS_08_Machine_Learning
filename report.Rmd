@@ -1,6 +1,9 @@
 ***
 
-# Machine Learning Project - Prediction of barbell lifts
+# Machine Learning Project
+
+## Prediction of barbell lifts
+
 by Bruno Berrehuel ([LinkedIn](https://fr.linkedin.com/in/brunoberrehuel))
 
 ***
@@ -88,7 +91,6 @@ accuAlgo <- function(fitAlgo){
     accuracy <- max(fitAlgo[[1]]$results$Accuracy)
     # research of SD for this accuracy
     indAcc <- which.max(fitAlgo[[1]]$results$Accuracy)
-    # accuracySD <- fitAlgo[[1]]$results$AccuracySD[indAcc]
     meth <- fitAlgo[[1]]$method
     # store results in data.frame
     res <- data.frame(Accuracy = accuracy*100, Time=fitAlgo[[2]], method=meth)
@@ -170,91 +172,114 @@ fitFive <- multiAlgo(bestFive, datas=clean)
 ```
 
 
-# Overview
+# Executive overview
 Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it.  This report predicts the manner in which people did the exercises, based on data from accelerometers on the belt, forearm, arm, and dumbell.  
-Despite that all variables with NAs have been removed, the models accuracies are very good, as shown in table~\ref{tableFive}.
+Despite that all variables with NAs have been removed, the models accuracies are very good, as shown in figure below.
 In this case, variables with NA aren't necessary to fit a good prediction model.  
-Further fine tuning could be done on the model, but this will not be seen in this report.
+Further fine tuning could be done on the model, but this will not be seen in this report.  
+*A good model should have good accuracy for few computation time. So I recommand using the __Bagged Tree model__ as shown in figure below. It is possible to predict and survey, not only __if__ people do exercices, or __how many__ exercises they do, but most of it __how well__ they do them.*  
     
-
-*A good model should have good accuracy for few computation time. So I recommand using the __Bagged Tree model__ as shown in figure~\ref{fig:plotAccuTimeFive}. It is possible to predict and survey, not only __if__ people do exercices, or __how many__ exercises they do, but most of it __how well__ they do them.*
-
+```{r plotAccuTimeFive, echo=FALSE, cache=TRUE, message=FALSE, fig.height=4, fig.width=8}
+accuTimeFive <- subset(multiAccu(fitFive), select=c(-3))
+accuTimeFive$Accuracy <- accuTimeFive$Accuracy
+attach(accuTimeFive)
+par(mar=c(4,4,1,1))
+plot(Accuracy,Time, xlim=c(95,100.5), ylim=c(0,2300), pch=19, col=c(1:5),
+     xlab="Model accuracy (%)", ylab="Computation time (s)", main="Accuracy vs computation time") 
+text(Accuracy,Time, row.names(accuTimeFive), pos=3) 
+detach(accuTimeFive)
+```
 
 # Introduction
 
 To predict how well people do exercices, six candidates were asked to perform barbell lifts correctly and incorrectly in 5 different ways.
-Results in the datasets are classified in 5 classes, according to how the exercises are done.[^1]
+Results in the datasets are classified in 5 classes, according to how the exercises are done :  
+
 - Class A : exactly according to the specification
 - Class B : throwing the elbows to the front 
 - Class C : lifting the dumbbell only halfway 
 - Class D : lowering the dumbbell only halfway 
 - Class E : throwing the hips to the front.
 
-[^1]Source : <http://groupware.les.inf.puc-rio.br/har>
+Source : <http://groupware.les.inf.puc-rio.br/har>
 
 
 # Dealing with datas
 
 ## Exploratory Analysis}
 
-There are `r dim(datas)[2]` potentials predictors, for `r dim(datas)[1]` observations.
+There are *`r dim(datas)[2]` potentials predictors*, for *`r dim(datas)[1]` observations*.  
 After a look on the structures of the data, the following columns can be removed because they have no added value for predictive model purpose : V1, user\_name, timestamps and windows columns.
 
 There are still `r dim(clean1)[2]` potentials predictors, and it seems to have several NAs in the dataset, and they have to be managed.
 
 
 ## Dealing with NAs
-In this dataset, there is no classified case without NA's. So it is necessary to view the distribution of the NAs in the predictors, here the columns of the dataset, and find a solution to deal with them.
-```{r plotna2, echo=FALSE, fig.cap="Distribution of NA in predictors", out.height="5cm", fig.height=3}
+
+In this dataset, there is no classified case without NA's. So it is necessary to view the distribution of the NAs in the predictors, here the columns of the dataset, and find a solution to deal with them.  
+
+As seen on figure and the table below, there are only two cases for predictors with NA :
+
+- there is no NA in the predictor
+- there are a lot of NA in the predictor, more than `r round(sumNA[1],3)*100`%.  
+  
+```{r plotna2, echo=FALSE, fig.height=3}
 # Plot the distribution
 par(mar=c(4,4,1,2))
-hist(meanNA$meanNA, main="", breaks=75, col="blue",
-     xlab="mean of NA")
+hist(meanNA$meanNA, breaks=75, col="blue",
+     xlab="mean of NA", main="Distribution of NA in predictors")
 ```
 ```{r plotnamean, echo=FALSE, results="asis"}
 # Print the summary in nice table
-print.xtable(xtable(sumNA,
-                    caption="Summary for mean of NA in predictors 
-                    with NA",
-                    digits=4, label="namean"), include.rownames=F)
+library(pander)
+panderOptions("digits",c(3,3,0,3))
+panderOptions("table.style","rmarkdown")
+pander(sumNA, caption="Mean of NAs in predictors with NAs")
 ```
-
-As seen on figure~\ref{fig:plotna2} and the table~\ref{namean}, there are only two cases for predictors with NA :
-- there is no NA in the predictor
-- there are a lot of NA in the predictor, more than `r round(sumNA[1],3)*100`\%.
-
 
 *Predictors with NAs can be safely removed in order to reduce noise without available informations.*
 
-There are now `r dim(clean)[2]` predictors, which will be a little easier to manage with fitting model.
+There are now *`r dim(clean)[2]` predictors*, which will be a little easier to manage with fitting model.
 
 
 # Fitting a predictive model
 
-The model analysis will be[^2] :
+The model analysis will be :
+
 1. test variety of models on a small sample of the dataset, with the default parameters. The train will be checked by cross-validation of 10 folds, repeated 3 times, and the distribution of the accuracy, with statistique test, will be reviewed. 
 1. select the bests 5 of them for accuracy, then train and test them with cross-validation on the complete dataset, under the same testing conditions. 
 1. finally choose the best one.
-Further analysis could be done to tune the selected model in order to increase performance in accuracy and computation time, but it's not the goal of this report.
-[^2]Source : <http://machinelearningmastery.com/evaluate-machine-learning-algorithms-with-r/>
+Further analysis could be done to tune the selected model in order to increase performance in accuracy and computation time, but it's not the goal of this report.  
+
+Source : <http://machinelearningmastery.com/evaluate-machine-learning-algorithms-with-r/>
 
 ## Global quick review
-The Machine Learning algorithms are choosen to represent a good mix of algorithms. For this classification case, the `r length(fitAll)` models chosen are listed in table~\ref{nameTable}.
+The Machine Learning algorithms are choosen to represent a good mix of algorithms. For this classification case, the `r length(fitAll)` models chosen are listed in table below.
 
 ```{r nameTable, echo=FALSE, results="asis", warning=FALSE, message=FALSE}
 # print the reviewed model in table.
 long <- length(fitAll)
 model <- NULL
-    model <- sapply(fitAll, function(x) x[[1]]$modelInfo$label)
-    model <- data.frame(model)
-print.xtable(xtable(model, caption="Models reviewed",
-                    label="nameTable"), include.rownames=FALSE, 
-             include.colnames=FALSE, hline.after=c(0,long), 
-             table.placement="H")
+model <- sapply(fitAll, function(x) x[[1]]$modelInfo$label)
+model <- data.frame(model)
+
+panderOptions("table.style","multiline")
+panderOptions("table.alignment.default","left")
+pander(model)
 ```
 
-```{r plotAllModels, echo=FALSE, message=FALSE, fig.pos="h", warning=FALSE}
-# boxplot all model, oredered by accuracy
+
+As seen on figure below, the five bests models for accuracy are :
+```{r nameFive, echo=FALSE, results="asis"}
+nameFive <- data.frame(row.names(plotsAccu[1:5,]))
+names(nameFive) <- c("Best Five Models")
+
+panderOptions("table.style","multiline")
+panderOptions("table.alignment.default","left")
+pander(nameFive)
+```
+```{r plotAllModels, echo=FALSE, message=FALSE, fig.pos="h", warning=FALSE, fig.height=8}
+# boxplot all model, ordered by accuracy
 library(ggplot2)
 plotsAll <- multiSampleAccu(fitAll)
 plotsAccu <- multiAccu(fitAll)
@@ -263,22 +288,15 @@ library(reshape)
 g <- ggplot(data=melt(plotsAll), aes(x=as.factor(variable), y=value)) 
 g <- g + geom_boxplot() + theme_minimal()
 g <- g + theme(axis.text.x = element_text(angle=30, hjust=1))
-g <- g + ylab("Accuracy (%)") + xlab("") + main("Accuracy of each model on quickview dataset")
+g <- g + ylab("Accuracy (%)") + xlab("") + ggtitle("Accuracy of each model on quickview dataset")
 g
 ```
 
-As seen on figure~\ref{fig:plotAllModels}, the five bests models for accuracy are :
-```{r nameFive, echo=FALSE, results="asis"}
-nameFive <- data.frame(row.names(plotsAccu[1:5,]))
-print.xtable(xtable(nameFive),include.rownames=F, include.colnames=F, 
-             hline.after=NULL, table.placement="H")
-```
 The models have pretty good accuracy, from `r round(plotsAccu[1,]$Accuracy, 1)`% to `r round(plotsAccu[5,]$Accuracy, 1)`\%. 
-The *Bagging CART model* is especially interesting because of its small computation time, `r round(plotsAccu$Time[5],0)` seconds, in comparaison of the `r round(plotsAccu$Time[1], 0)` seconds for the C5.0 model[^3].
-[^3]Computations times are calculated with computation on parallel work on 6 cores i7 cpu.
+The *Bagging CART model* is especially interesting because of its small computation time, `r round(plotsAccu$Time[5],0)` seconds, in comparaison of the `r round(plotsAccu$Time[1], 0)` seconds for the C5.0 model (Computations times are calculated with computation on parallel work on 6 cores i7 cpu).
 
 The statistiques tests for the means are significant, as we fail to reject that the trues means are not equals to the samples means, so the samples are representatives of the populations.
-The 95\% confidences intervals are presented in table~\ref{confInt}.
+The 95\% confidences intervals are presented in table below.
 
 ```{r tTest, echo=FALSE, results="asis"}
 tTest <- apply(plotsAll[,1:5], 2, function(x) t.test(x, mu=mean(x)))
@@ -289,33 +307,38 @@ for (i in 1:5) {
     confTable[i,] <- confInt[,i]
 }
 row.names(confTable) <- names(plotsAll[,1:5])
-print.xtable(xtable(confTable,
-                    caption="Confidences intervals for models accuracy",
-                    digits=4, label="confInt"), include.colnames=F, 
-             hline.after=c(0,nrow(confTable)))
+confTable <- data.frame(confTable)
+names(confTable) <- c("min","max")
+
+panderOptions("digits", 3)
+panderOptions("table.style","multiline")
+panderOptions("table.alignment.default","right")
+pander(confTable)
 ```
 
 ## Best 5 models study
 
 The 5 bests models are trained on the full dataset, with cross-validation with 10 folders, repeated 3 times.
-Then the distribution of the accuracies are ordered and boxploted.
-```{r plotFive, echo=FALSE, message=FALSE, warning=FALSE}
+Then the distribution of the accuracies are ordered and boxploted.  
+```{r plotFive, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
 sampleAccuFive <- multiSampleAccu(fitFive)
 
 g <- ggplot(data=melt(sampleAccuFive), aes(x=as.factor(variable),
                                            y=value)) 
 g <- g + geom_boxplot() + theme_minimal()
 g <- g + theme(axis.text.x = element_text(angle=30, hjust=1))
-g <- g + ylab("Accuracy (%)") + xlab("") + main("Accuracy of the five best models on total dataset")
+g <- g + ylab("Accuracy (%)") + xlab("") + ggtitle("Accuracy of the five best models on total dataset")
 g
 ```
-```{r tableFive, echo=FALSE, results="asis"}
+
+```{r tableFive, echo=FALSE, cache=TRUE, results="asis"}
 accuTimeFive <- subset(multiAccu(fitFive), select=c(-3))
 accuTimeFive$Time <- round(accuTimeFive$Time,0)
-xtable(accuTimeFive, digits=2, label="tableFive",
-       caption="Accuracy and computation time for the 5 bests models")
+panderOptions("digits", 4)
+pander(accuTimeFive, caption="Accuracy and computation time for the 5 bests models")
 ```
-The most important result is that the accuracies are very, very good, around 99\%, and with small variations around the mean, as seen with the boxplots on the figure~\ref{fig:plotFive}. 
+
+The most important result is that the accuracies are very, very good, around 99\%, and with small variations around the mean, as seen with the boxplots on the figure upward. 
 
 Note the small decrease in performance of the Stochastic Gradient Boosting model, which is now worse than the Bagging CART model.
 The computations times have a very broad set, from 1 times 13 depending on the model considered.
@@ -327,22 +350,14 @@ A good predictive model should be very accurate and very fast.
 
 
 All the four finalists models are very accurate, so the difference will be in computation time, and the clear winner is here the *Bagged CART Model*, with only `r round(accuTimeFive$Time[4],0)` seconds of computation, in comparaison of `r round(accuTimeFive$Time[2],0)` seconds of the `r row.names(accuTimeFive[2,])`, which is the slowest model.
-The difference appears more clearly on the figure~\ref{fig:plotAccuTimeFive}.
 
-```{r plotAccuTimeFive, echo=FALSE, message=FALSE}
-accuTimeFive$Accuracy <- accuTimeFive$Accuracy
-attach(accuTimeFive)
-par(mar=c(4,4,1,1))
-plot(Accuracy,Time, xlim=c(95,100.5), ylim=c(0,2300), pch=19, col=c(1:5),
-     xlab="Model accuracy (%)", ylab="Computation time (s)", main="Accuracy vs computation time") 
-text(Accuracy,Time, row.names(accuTimeFive), pos=3) 
-detach(accuTimeFive)
-```
 
 # Acknowledgments
 
 Special thanks to [Machine Learning Mastery](http://machinelearningmastery.com) for sharing methods and tricks on data science, especially the method used in this report.
 
+***
+***
 
 # Code
 
@@ -353,30 +368,30 @@ All the code used in this report is written below.
 ```{r ref.label="loadData", warning=FALSE, eval=FALSE, size="small"}
 ```
 
-## Simplify dataset and deal with NAs}
+## Simplify dataset and deal with NAs
 
-###  NA distribution}
+###  NA distribution
 
 ```{r ref.label="nadist", eval=FALSE, size="small"}
 ```
 ```{r ref.label="plotna2", eval=FALSE, size="small"}
 ```
 
-###  NA mean}
+###  NA mean
 
 ```{r ref.label="namean", eval=FALSE, size="small"}
 ```
 ```{r ref.label="plotnamean", eval=FALSE, size="small"}
 ```
 
-## Fitting a model}
+## Fitting a model
 
-###  Functions to automate process}
+###  Functions to automate process
 
 ```{r ref.label="functions", eval=FALSE, size="small"}
 ```
 
-###  Model quick review}
+###  Model quick review
 
 ```{r ref.label="testAllModels", eval=FALSE, size="small"}
 ```
@@ -391,7 +406,7 @@ All the code used in this report is written below.
 ```{r ref.label="tTest", eval=FALSE, size="small"}
 ```
 
-###  Best Five models}
+###  Best Five models
 
 ```{r ref.label="bestFive", eval=FALSE, size="small"}
 ```
@@ -400,7 +415,7 @@ All the code used in this report is written below.
 ```{r ref.label="tableFive", eval=FALSE, size="small"}
 ```
 
-## And the Winner is...}
+## And the Winner is...
 
 ```{r ref.label="plotAccuTimeFive", eval=FALSE, size="small"}
 ```
